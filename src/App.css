@@ -1,5 +1,12 @@
 .App {
+  font-family: Arial, sans-serif;
+  margin: 50px;
   text-align: center;
+}
+
+button {
+  margin-top: 20px;
+  padding: 10px 20px;
 }
 
 .App-logo {

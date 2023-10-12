@@ -29,3 +29,13 @@ jobs:
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
+
+    - name: Publish
+      uses: nogsantos/scp-deploy@master
+      with:
+        src: ./build/*
+        port: 22
+        host: ${{ secrets.SSH_HOST }}
+        remote: ${{ secrets.SSH_DIR }}
+        user: ${{ secrets.SSH_USER }}
+        key: ${{ secrets.SSH_KEY }}

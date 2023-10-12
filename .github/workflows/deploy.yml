@@ -1,0 +1,34 @@
+name: Secondary Workflow
+
+on:
+  workflow_run:
+    workflows: ["Node.js CI"]
+    types:
+      - completed
+
+jobs:
+  another-job:
+    # This conditional ensures this job runs ONLY if the primary workflow was successful
+    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main'
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use Node.js 18.x
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18.x
+        cache: 'npm'
+    - run: npm ci
+    - run: npm run build --if-present
+    - run: npm test
+
+    - name: Publish
+      uses: nogsantos/scp-deploy@master
+      with:
+        src: ./build/*
+        port: 22
+        host: ${{ secrets.SSH_HOST }}
+        remote: ${{ secrets.SSH_DIR }}
+        user: ${{ secrets.SSH_USER }}
+        key: ${{ secrets.SSH_KEY }}

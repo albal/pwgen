@@ -1,0 +1,58 @@
+import React, { useState, useEffect } from 'react';
+import './App.css';
+
+function App() {
+  const [password, setPassword] = useState('');
+  const [length, setLength] = useState(12);
+  const [useLetters, setUseLetters] = useState(true);
+  const [useNumbers, setUseNumbers] = useState(false);
+  const [useSymbols, setUseSymbols] = useState(false);
+
+  const generatePassword = () => {
+    let charset = '';
+
+    if (useLetters) charset += 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    if (useNumbers) charset += '0123456789';
+    if (useSymbols) charset += '!@#$%^&*()_+=-{}[]|:;<>,.?~';
+
+    let result = '';
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * charset.length);
+      result += charset[randomIndex];
+    }
+
+    setPassword(result);
+  };
+
+  useEffect(() => {
+    generatePassword();
+  }, [length, useLetters, useNumbers, useSymbols]);
+
+  return (
+    <div className="App">
+      <h2>Password Generator</h2>
+      <div>
+        Length: <input type="number" value={length} onChange={e => setLength(+e.target.value)} />
+      </div>
+      <div>
+        <label>
+          <input type="checkbox" checked={useLetters} onChange={e => setUseLetters(e.target.checked)} /> Use letters
+        </label>
+      </div>
+      <div>
+        <label>
+          <input type="checkbox" checked={useNumbers} onChange={e => setUseNumbers(e.target.checked)} /> Use numbers
+        </label>
+      </div>
+      <div>
+        <label>
+          <input type="checkbox" checked={useSymbols} onChange={e => setUseSymbols(e.target.checked)} /> Use symbols
+        </label>
+      </div>
+      <div data-testid="generated-password">Password: {password}</div>
+    </div>
+  );
+}
+
+export default App;
+
